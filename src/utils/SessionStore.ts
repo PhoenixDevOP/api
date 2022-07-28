@@ -24,12 +24,10 @@ export default class PhoenixStore extends Store {
   }
   public startInterval() {
     if (this.timeout) {
-      console.log('[Scheduler] Stopped interval');
       clearInterval(this.timeout);
       this.timeout = null;
     }
     if (!this.timeout) {
-      console.log('[Scheduler] Started interval');
       this.timeout = setInterval(
         async () => await this.prune(),
         this.refreshTimeout,
@@ -64,7 +62,7 @@ export default class PhoenixStore extends Store {
     await this.createSessions({
       data: JSON.stringify(session),
       sessionId,
-      updateAt: expires,
+      expireAt: expires,
       createdAt: new Date(),
     });
     if (callback) return Utils.defer(callback);

@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as passport from 'passport';
 import { config, Types, PhoenixStore } from './utils';
+import * as csurf from 'csurf';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(
@@ -19,8 +20,9 @@ async function bootstrap() {
         secure: false,
       },
     }),
+    csurf(),
   );
-  app.enableCors({ credentials: true });
+  app.enableCors({ credentials: true, optionsSuccessStatus: 200 });
   app.use(passport.initialize());
   app.use(passport.session());
   await app.listen(3000);
