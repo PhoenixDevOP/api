@@ -5,7 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import * as passport from 'passport';
 import { config, Types, PhoenixStore } from './utils';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
   app.use(
     cookieParser(),
     session({
@@ -20,6 +20,7 @@ async function bootstrap() {
       },
     }),
   );
+  app.enableCors({ credentials: true });
   app.use(passport.initialize());
   app.use(passport.session());
   await app.listen(3000);
