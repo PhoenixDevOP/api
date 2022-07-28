@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { DiscordStrategy } from './strategies';
-import DiscordSerializer from './serializer/DiscordSerializer';
+import Serializer from './serializer/Serializer';
 import { ServicesModule } from 'src/services/services.module';
 import { Types } from 'src/utils';
 
@@ -12,7 +12,7 @@ import { Types } from 'src/utils';
   providers: [
     { provide: Types.ModuleType.AUTH, useClass: AuthService },
     DiscordStrategy,
-    DiscordSerializer,
+    Serializer,
   ],
   controllers: [AuthController],
   exports: [{ provide: Types.ModuleType.AUTH, useClass: AuthService }],

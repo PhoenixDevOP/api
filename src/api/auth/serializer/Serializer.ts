@@ -1,0 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import { PassportSerializer } from '@nestjs/passport';
+import { Types } from 'src/utils';
+
+@Injectable()
+export default class Serializer extends PassportSerializer {
+  constructor() {
+    super();
+  }
+  serializeUser(user: Express.User, done: Types.Done): any {
+    return done(null, user);
+  }
+
+  public deserializeUser(user: Express.User, done: Types.Done) {
+    return done(null, user);
+  }
+}
