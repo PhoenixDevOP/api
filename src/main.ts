@@ -12,7 +12,7 @@ async function bootstrap() {
       store: new PhoenixStore(app.get(Types.ModuleType.PRISMA)),
       resave: false,
       saveUninitialized: false,
-      secret: config().session.sectret,
+      secret: config().session.secret,
       name: 'sessionId',
       cookie: {
         maxAge: 6e5,
