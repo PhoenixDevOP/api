@@ -1,5 +1,5 @@
 export type LoginType = 'DISCORD';
-export type Done = (err: Error, user: any) => void;
+export type Done = (err: Error, user: Express.User) => void;
 
 export interface DiscordUser extends Express.User {
   id: string;
