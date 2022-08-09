@@ -7,7 +7,7 @@ export default class PhoenixStore extends Store {
   public timeout: NodeJS.Timer | null = null;
   constructor(
     private prisma: PrismaService,
-    private refreshTimeout: number = 60000,
+    private refreshTimeout: number = 1000,
   ) {
     super();
     this.startInterval();
@@ -16,10 +16,10 @@ export default class PhoenixStore extends Store {
   public async prune() {
     const query = await this.findSession();
     const expireSession = query
-      .filter((session) => new Date().valueOf() >= session.updateAt.valueOf())
+      .filter((session) => new Date().valueOf() >= session.expireAt.valueOf())
       .map(({ sessionId }) => sessionId);
     await this.prisma.session.deleteMany({
-      where: { sessionId: { in: expireSession } },
+      where: { sessionId: { in: expireSession ?? [] } },
     });
   }
   public startInterval() {
@@ -36,22 +36,23 @@ export default class PhoenixStore extends Store {
   }
   async destroy(sid: string, callback?: (err?: any) => void) {
     const session = await this.findSession(sid);
-    if (!session) return callback(null);
-    await this.prisma.session.delete({
+    if (!session) return callback();
+    await this.prisma.session.deleteMany({
       where: { sessionId: session.sessionId },
     });
     if (callback) Utils.defer(callback);
+    return;
   }
 
   public async get(
     sessionId: string,
-    callback: (err: any, session?: SessionData) => any,
+    callback: (err?: any, session?: SessionData) => any,
   ) {
     const session = await this.findSession(sessionId);
-    if (!session) return callback(null);
+    if (!session) return callback();
     const result = JSON.parse(session.data ?? '{}') as SessionData;
     if (callback) Utils.defer(callback, null, result);
-    return result;
+    return;
   }
   public async set(
     sessionId: string,
@@ -65,13 +66,15 @@ export default class PhoenixStore extends Store {
       expireAt: expires,
       createdAt: new Date(),
     });
-    if (callback) return Utils.defer(callback);
+    if (callback) Utils.defer(callback);
+    return;
   }
 
   public async clear(callback?: (err?: any) => void) {
     const sessions = await this.findSession();
     if (sessions.length) await this.prisma.session.deleteMany();
     if (callback) Utils.defer(callback);
+    return;
   }
 
   private findSession(): Promise<Session[]>;
@@ -84,19 +87,22 @@ export default class PhoenixStore extends Store {
       }
       return sessions;
     }
-    const session = await this.prisma.session.findFirst({
+    const session = await this.prisma.session.findUnique({
       where: { sessionId },
     });
-    if (!session) return null;
-    return session;
+    return session ?? null;
   }
 
   private async createSessions(session: Session) {
-    let sessions = await this.findSession(session.sessionId);
+    const sessions = await this.findSession(session.sessionId);
     if (!sessions)
-      sessions = await this.prisma.session.create({
+      return await this.prisma.session.create({
         data: session,
       });
-    return sessions;
+    await this.prisma.session.update({
+      data: session,
+      where: { sessionId: sessions.sessionId },
+    });
+    return session;
   }
 }
