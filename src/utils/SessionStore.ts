@@ -31,7 +31,7 @@ export default class PhoenixStore extends Store {
       this.timeout = setInterval(
         async () => await this.prune(),
         this.refreshTimeout,
-      );
+      ) as NodeJS.Timer;
     }
   }
   async destroy(sid: string, callback?: (err?: any) => void) {
