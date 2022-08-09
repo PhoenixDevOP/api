@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { Types } from 'src/utils';
+import { Types } from '../../utils';
 import { DiscordController } from './discord.controller';
 import { DiscordService } from './discord.service';
 
