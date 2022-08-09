@@ -14,5 +14,5 @@ model Session {
   sessionId String    @id @unique
   data      String
   createdAt DateTime? @default(now()) @db.Date
-  expireAt  DateTime  @db.Date
+  expireAt  DateTime
 }
