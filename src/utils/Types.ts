@@ -1,11 +1,46 @@
-export type LoginType = 'DISCORD';
-export type Done = (err: Error, user: Express.User) => void;
+import type { Prisma } from '@prisma/client';
 
-export interface DiscordUser extends Express.User {
+export enum LoginType {
+  DISCORD = 'DISCORD',
+  GOOGLE = 'GOOGLE',
+}
+export type Done = (err: Error, user: BaseUserData) => void;
+
+export interface DiscordUser
+  extends Omit<BaseUserData<LoginType.DISCORD>, 'type'> {
+  type: LoginType.DISCORD;
+  metadata: {
+    guilds?: GuildMetaData[] | [];
+  };
+}
+
+export interface GuildMetaData extends Prisma.InputJsonObject {
+  owner: boolean;
+  permissions: number;
+  icon: string | null;
   id: string;
+  name: string;
+  features?: string[] | undefined;
+}
+
+export interface BaseUserData<T extends LoginType = LoginType>
+  extends Express.User {
+  id: string;
+  type: T;
   refreshToken: string;
   accessToken: string;
   fetchedAt: string;
+  metadata: Prisma.InputJsonObject;
+}
+
+export type UserResolver = DiscordUser | GoogleUser;
+
+export interface GoogleUser
+  extends Omit<BaseUserData<LoginType.GOOGLE>, 'type'> {
+  type: LoginType.GOOGLE;
+  metadata: {
+    email: string;
+  };
 }
 
 export enum ModuleType {
