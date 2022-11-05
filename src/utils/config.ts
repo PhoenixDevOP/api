@@ -1,4 +1,7 @@
 export default () => ({
+  cors: {
+    origin: process.env.CORS_ORIGIN,
+  },
   authType: ['discord', 'google'],
   session: {
     secret: process.env.SESSION_SECRET,
