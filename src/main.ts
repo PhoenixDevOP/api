@@ -22,7 +22,10 @@ async function bootstrap() {
     }),
     csurf(),
   );
-  app.enableCors({ credentials: true, optionsSuccessStatus: 200 });
+  app.enableCors({
+    credentials: true,
+    origin: config().cors.origin,
+  });
   app.use(passport.initialize());
   app.use(passport.session());
   await app.listen(3000);
