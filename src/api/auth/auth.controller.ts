@@ -32,7 +32,6 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @Get('/google/authorize')
   public googleAuthorize(@Req() req: Request, @Res() res: Response) {
-    console.log(req.query);
     return res.redirect('/api/google/@me');
   }
 }
