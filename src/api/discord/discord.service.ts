@@ -1,7 +1,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { Types, Utils } from 'src/utils';
+import { Types, Utils } from '../../utils';
 @Injectable({ scope: Scope.REQUEST })
 export class DiscordService {
   constructor(@Inject(REQUEST) private readonly request: Request) {}

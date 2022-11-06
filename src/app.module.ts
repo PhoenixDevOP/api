@@ -27,12 +27,12 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(
       {
-        path: '/api/google/@me',
+        path: '/api/google/*',
         method: RequestMethod.GET,
       },
       {
         method: RequestMethod.GET,
-        path: '/api/discord/@me',
+        path: '/api/discord/*',
       },
     );
   }
