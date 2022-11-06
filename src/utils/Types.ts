@@ -4,7 +4,7 @@ export enum LoginType {
   DISCORD = 'DISCORD',
   GOOGLE = 'GOOGLE',
 }
-export type Done = (err: Error, user: BaseUserData) => void;
+export type Done = (err: Error, user: Express.User) => void;
 
 export interface DiscordUser
   extends Omit<BaseUserData<LoginType.DISCORD>, 'type'> {
